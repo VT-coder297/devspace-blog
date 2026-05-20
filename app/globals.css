@@ -1,11 +1,29 @@
 @import 'tailwindcss';
-@pinport "@tailwindcss/typography";
+@plugin "@tailwindcss/typography";
 
+/* 
+  FIX 2: CRITICAL TAILWIND v4 DIRECTIVE!
+  This instructs the engine to override the system media query and trigger 
+  the dark mode styles whenever the .dark class is added to the <html> element.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Global Base Token Variables (Default Light View) */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* 
+  FIX 3: Class-based token management for next-themes alignment.
+  When next-themes modifies the HTML tag to class="dark", these values kick in.
+*/
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* Bind your global variables inside Tailwind's v4 inline compiler engine */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -13,19 +31,15 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* --background: #f4f4f5;  */
-    /* Changes dark mode to a light gray background */
-    /* --foreground: #171717;  */
-    /* Changes dark mode text to dark gray */
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* 
+  Apply the variables directly to your application body structure 
+  with smooth color shifting animations.
+*/
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
